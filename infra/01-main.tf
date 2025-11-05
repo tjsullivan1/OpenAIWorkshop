@@ -6,6 +6,10 @@ resource "azurerm_resource_group" "main" {
   name     = local.resource_group_name
   location = var.location
   tags     = local.common_tags
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
 
 resource "azurerm_ai_services" "ai_hub" {
@@ -28,6 +32,10 @@ resource "azurerm_ai_services" "ai_hub" {
   network_acls {
     default_action = "Allow"
     ip_rules       = []
+  }
+
+  lifecycle {
+    ignore_changes = [tags]
   }
 }
 
