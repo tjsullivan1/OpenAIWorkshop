@@ -33,21 +33,21 @@ output "ai_hub_id" {
 #   value       = azurerm_machine_learning_workspace.ai_hub.workspace_id
 # }
 
-# # Azure OpenAI
-# output "openai_account_name" {
-#   description = "Name of the Azure OpenAI account"
-#   value       = azurerm_cognitive_account.openai.name
-# }
+# Azure OpenAI
+output "openai_account_name" {
+  description = "Name of the Azure OpenAI account"
+  value       = azurerm_cognitive_deployment.gpt.name
+}
 
-# output "openai_endpoint" {
-#   description = "Endpoint URL for the Azure OpenAI service"
-#   value       = azurerm_cognitive_account.openai.endpoint
-# }
+output "openai_endpoint" {
+  description = "Endpoint URL for the Azure OpenAI service"
+  value       = azurerm_ai_services.ai_hub.endpoint
+}
 
-# output "openai_deployment_name" {
-#   description = "Name of the OpenAI model deployment"
-#   value       = azurerm_cognitive_deployment.gpt_model.name
-# }
+output "openai_deployment_name" {
+  description = "Name of the OpenAI model deployment"
+  value       = azurerm_cognitive_deployment.gpt.name
+}
 
 # # Storage Account
 # output "storage_account_name" {

@@ -31,7 +31,8 @@ resource "azurerm_ai_services" "ai_hub" {
   }
 }
 
-resource "azurerm_cognitive_deployment" "gpt41" {
+
+resource "azurerm_cognitive_deployment" "gpt" {
   cognitive_account_id       = azurerm_ai_services.ai_hub.id
   name                       = var.openai_deployment_name
 
