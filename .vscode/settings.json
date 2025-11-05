@@ -5,5 +5,11 @@
     "azureFunctions.projectLanguage": "Python",
     "azureFunctions.projectRuntime": "~4",
     "debug.internalConsoleOptions": "neverOpen",
-    "azureFunctions.projectSubpath": "scenarios\\incubations\\copilot\\realtime_streaming\\azurefunc"
+    "azureFunctions.projectSubpath": "scenarios\\incubations\\copilot\\realtime_streaming\\azurefunc",
+    "[terraform]": {
+        "terraform.validation": false
+    },
+    "files.associations": {
+        "ignore_validation.tf": "plaintext"
+    }
 }
