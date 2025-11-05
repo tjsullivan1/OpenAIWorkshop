@@ -17,40 +17,36 @@ variable "location" {
   }
 }
 
-variable "resource_group_name" {
-  description = "Name of the resource group"
+
+# Project prefix and stage for naming
+variable "project_prefix" {
+  description = "Prefix for all resource names (e.g. 'openaiworkshop')"
   type        = string
-  default     = "rg-openai-workshop"
+  default     = "openaiworkshop"
 }
 
-variable "ai_hub_name" {
-  description = "Name of the Azure AI Foundry Hub"
+variable "project_stage" {
+  description = "Deployment stage (e.g. 'dev', 'prod', 'test')"
   type        = string
-  default     = "aihub-openai-workshop"
-}
-
-variable "ai_project_name" {
-  description = "Name of the Azure AI Foundry Project"
-  type        = string
-  default     = "aiproject-openai-workshop"
+  default     = "dev"
 }
 
 variable "openai_deployment_name" {
   description = "Name of the OpenAI model deployment"
   type        = string
-  default     = "gpt-4o"
+  default     = "gpt-4.1"
 }
 
 variable "openai_model_name" {
   description = "OpenAI model name to deploy"
   type        = string
-  default     = "gpt-4o"
+  default     = "gpt-4.1"
 }
 
 variable "openai_model_version" {
   description = "OpenAI model version"
   type        = string
-  default     = "2024-08-06"
+  default     = "2025-04-14"
 }
 
 variable "tags" {
@@ -61,4 +57,10 @@ variable "tags" {
     Project     = "OpenAI-Workshop"
     ManagedBy   = "Terraform"
   }
+}
+
+variable "created_date" {
+  description = "Creation date for resources (set once, prevents timestamp updates)"
+  type        = string
+  default     = null
 }

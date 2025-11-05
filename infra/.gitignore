@@ -39,3 +39,6 @@ workshop.env
 # OS specific files
 .DS_Store
 Thumbs.db
+
+# others
+tfplan

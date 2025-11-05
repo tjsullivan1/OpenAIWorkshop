@@ -4,15 +4,20 @@
 # Azure region for resource deployment
 location = "East US"
 
-# Resource naming
-resource_group_name = "rg-openai-workshop"
-ai_hub_name         = "aihub-openai-workshop"
-ai_project_name     = "aiproject-openai-workshop"
+# Project naming
+project_prefix = "openaiworkshop"
+project_stage  = "dev"
+
+## Resource naming is now based on project_prefix and project_stage
+## resource_group_name, ai_hub_name, and ai_project_name are computed automatically
 
 # OpenAI model configuration
-openai_deployment_name = "gpt-4o"
-openai_model_name      = "gpt-4o"
-openai_model_version   = "2024-08-06"
+openai_deployment_name = "gpt-4.1"
+openai_model_name      = "gpt-4.1"
+openai_model_version   = "2025-04-14"
+
+# Set creation date once to avoid timestamp updates (optional)
+# created_date = "2025-11-05"
 
 # Tags applied to all resources
 tags = {
