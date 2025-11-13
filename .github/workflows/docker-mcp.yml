@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 env:
-    PROJECT_NAME: aoaiwkshp-backend
+    PROJECT_NAME: aoaiwkshp-mcp
     PROJECT_SUBPATH: mcp/
     SPECIFIC_RELEASE_TAG: ${{ vars.SPECIFIC_RELEASE_TAG || '' }}
 
