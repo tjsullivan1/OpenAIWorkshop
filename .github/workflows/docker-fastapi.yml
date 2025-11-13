@@ -39,9 +39,9 @@ jobs:
 
       - run: |
             if [ -z "${{ env.SPECIFIC_RELEASE_TAG }}" ]; then
-                docker build ${{ vars.PROJECT_SUBPATH }} -t ${{ vars.REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME }}:${{ github.sha }} -t ${{ vars.REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME }}:latest
+                docker build ${{ env.PROJECT_SUBPATH }} -t ${{ vars.REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME }}:${{ github.sha }} -t ${{ vars.REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME }}:latest
             else
-                docker build ${{ vars.PROJECT_SUBPATH }} -t ${{ vars.REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME }}:${{ env.SPECIFIC_RELEASE_TAG }} -t ${{ vars.REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME }}:latest
+                docker build ${{ env.PROJECT_SUBPATH }} -t ${{ vars.REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME }}:${{ env.SPECIFIC_RELEASE_TAG }} -t ${{ vars.REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME }}:latest
             fi
 
       - run: |
