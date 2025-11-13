@@ -64,3 +64,48 @@ variable "created_date" {
   type        = string
   default     = null
 }
+
+variable "https_only" {
+  description = "Should the web app only accept HTTPS requests"
+  type        = bool
+  default     = true
+}
+
+variable "always_on" {
+  description = "Should the web app be always on (not applicable for Free tier)"
+  type        = bool
+  default     = true
+}
+
+
+variable "docker_image_backend" {
+  description = "Docker image name (e.g., 'nginx:latest', 'httpd:alpine'). Leave empty to use runtime stack instead."
+  type        = string
+  default     = ""
+}
+
+variable "docker_image_mcp" {
+  description = "Docker image name (e.g., 'nginx:latest', 'httpd:alpine'). Leave empty to use runtime stack instead."
+  type        = string
+  default     = ""
+}
+
+variable "docker_registry_url" {
+  description = "Docker registry URL (e.g., 'https://index.docker.io' for Docker Hub). Only needed for private registries."
+  type        = string
+  default     = ""
+}
+
+variable "docker_registry_username" {
+  description = "Username for private Docker registry authentication"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "docker_registry_password" {
+  description = "Password for private Docker registry authentication"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
