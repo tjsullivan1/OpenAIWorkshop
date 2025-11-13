@@ -13,7 +13,7 @@ on:
 
 env:
     PROJECT_NAME: aoaiwkshp-backend
-    PROJECT_SUBPATH: agentic_ai/applications/
+    PROJECT_SUBPATH: agentic_ai/
     SPECIFIC_RELEASE_TAG: ${{ vars.SPECIFIC_RELEASE_TAG || '' }}
 
 
