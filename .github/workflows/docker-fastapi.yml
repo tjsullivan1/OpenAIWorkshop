@@ -37,12 +37,22 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
+      - name: Build registry prefix
+        id: prefix
+        run: |
+          if [[ "${{ vars.REGISTRY_LOGIN_SERVER }}" == *"docker.io"* ]]; then
+            echo "prefix=${{ vars.REGISTRY_LOGIN_SERVER }}/${{ secrets.REGISTRY_USERNAME }}/${{ env.PROJECT_NAME }}" >> $GITHUB_OUTPUT
+          else
+            echo "prefix=${{ vars.REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME }}" >> $GITHUB_OUTPUT
+          fi
+
+
       - run: |
             if [ -z "${{ env.SPECIFIC_RELEASE_TAG }}" ]; then
-                docker build ${{ env.PROJECT_SUBPATH }} -t ${{ vars.REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME }}:${{ github.sha }} -t ${{ vars.REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME }}:latest
+                docker build ${{ env.PROJECT_SUBPATH }} -t ${{ steps.prefix.outputs.prefix }}:${{ github.sha }} -t ${{ steps.prefix.outputs.prefix }}:latest
             else
-                docker build ${{ env.PROJECT_SUBPATH }} -t ${{ vars.REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME }}:${{ env.SPECIFIC_RELEASE_TAG }} -t ${{ vars.REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME }}:latest
+                docker build ${{ env.PROJECT_SUBPATH }} -t ${{ steps.prefix.outputs.prefix }}:${{ env.SPECIFIC_RELEASE_TAG }} -t ${{ steps.prefix.outputs.prefix }}:latest
             fi
 
       - run: |
-          docker push ${{ vars.REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME }} --all-tags
+          docker push ${{ steps.prefix.outputs.prefix }} --all-tags
