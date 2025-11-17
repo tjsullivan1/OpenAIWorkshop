@@ -1,6 +1,9 @@
 # Main Infrastructure Resources
 # Core Azure resources for the OpenAI Workshop
 
+# Data sources
+data "azurerm_client_config" "current" {}
+
 # Resource Group
 resource "azurerm_resource_group" "main" {
   name     = local.resource_group_name
@@ -39,7 +42,62 @@ resource "azurerm_ai_services" "ai_hub" {
   }
 }
 
+# Key Vault
+# To reference secrets in App Service app settings, use the format:
+# @Microsoft.KeyVault(SecretUri=https://<keyvault-name>.vault.azure.net/secrets/<secret-name>/<version>)
+# Or without version: @Microsoft.KeyVault(SecretUri=https://<keyvault-name>.vault.azure.net/secrets/<secret-name>/)
+# Example: "@Microsoft.KeyVault(SecretUri=https://kv-example.vault.azure.net/secrets/DatabasePassword/)"
+resource "azurerm_key_vault" "main" {
+  name                       = local.key_vault_name
+  location                   = var.location
+  resource_group_name        = azurerm_resource_group.main.name
+  tenant_id                  = data.azurerm_client_config.current.tenant_id
+  sku_name                   = "standard"
+  soft_delete_retention_days = 7
+  purge_protection_enabled   = false
 
+  # Enable RBAC authorization (recommended over access policies)
+  enable_rbac_authorization = true
+
+  # Network settings
+  public_network_access_enabled = true
+
+  network_acls {
+    bypass         = "AzureServices"
+    default_action = "Allow"
+  }
+
+  tags = local.common_tags
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
+# Key Vault Role Assignment - Current User (Key Vault Administrator)
+resource "azurerm_role_assignment" "kv_admin_current_user" {
+  scope                = azurerm_key_vault.main.id
+  role_definition_name = "Key Vault Administrator"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+# Key Vault Role Assignment - Backend App (Key Vault Secrets User)
+resource "azurerm_role_assignment" "kv_secrets_backend" {
+  scope                = azurerm_key_vault.main.id
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = azurerm_linux_web_app.backend.identity[0].principal_id
+
+  depends_on = [azurerm_linux_web_app.backend]
+}
+
+# Key Vault Role Assignment - MCP App (Key Vault Secrets User)
+resource "azurerm_role_assignment" "kv_secrets_mcp" {
+  scope                = azurerm_key_vault.main.id
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = azurerm_linux_web_app.mcp.identity[0].principal_id
+
+  depends_on = [azurerm_linux_web_app.mcp]
+}
 
 resource "azurerm_service_plan" "main" {
   name                = "asp-${local.web_app_name_prefix}"
@@ -72,6 +130,11 @@ resource "azurerm_linux_web_app" "backend" {
   })
 
   tags = var.tags
+
+  # Enable System Assigned Managed Identity
+  identity {
+    type = "SystemAssigned"
+  }
 
   site_config {
     always_on = var.always_on
@@ -138,10 +201,24 @@ resource "azurerm_linux_web_app" "mcp" {
 
   # App settings - can be customized per app if needed
   app_settings = merge(var.tags, {
-    "WEBSITE_RUN_FROM_PACKAGE" = "1"
+    "WEBSITE_RUN_FROM_PACKAGE" = "1",
+    "AZURE_OPENAI_ENDPOINT"="YOUR-OPENAI-SERVICE-ENDPOINT.openai.azure.com",
+    "AZURE_OPENAI_API_KEY"="YOUR-OPENAI-API-KEY",
+    "AZURE_OPENAI_API_VERSION"=2025-03-01-preview,
+    "AZURE_OPENAI_EMBEDDING_DEPLOYMENT"="text-embedding-ada-002",
+    "DB_PATH"="data/contoso.db",
+    "AAD_TENANT_ID"="",
+    "MCP_API_AUDIENCE"="",
+    "MCP_SERVER_URI"="http://localhost:7000/mcp",
+    "DISABLE_AUTH"="true",
   })
 
   tags = var.tags
+
+  # Enable System Assigned Managed Identity
+  identity {
+    type = "SystemAssigned"
+  }
 
   site_config {
     always_on = var.always_on
