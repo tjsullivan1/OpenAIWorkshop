@@ -44,7 +44,7 @@ resource "azurerm_ai_services" "ai_hub" {
 resource "azurerm_service_plan" "main" {
   name                = "asp-${local.web_app_name_prefix}"
   resource_group_name = azurerm_resource_group.main.name
-  location            = var.location
+  location            = var.app_location
   os_type             = "Linux"
   sku_name            = "P2v3"
 }
@@ -53,7 +53,7 @@ resource "azurerm_service_plan" "main" {
 resource "azurerm_linux_web_app" "backend" {
 
   name                = "wa-${local.web_app_name_prefix}-backend"
-  location            = var.location
+  location            = var.app_location
   resource_group_name = azurerm_resource_group.main.name
   service_plan_id     = azurerm_service_plan.main.id
 
@@ -123,7 +123,7 @@ resource "azurerm_linux_web_app" "backend" {
 resource "azurerm_linux_web_app" "mcp" {
 
   name                = "wa-${local.web_app_name_prefix}-mcp"
-  location            = var.location
+  location            = var.app_location
   resource_group_name = azurerm_resource_group.main.name
   service_plan_id     = azurerm_service_plan.main.id
 
