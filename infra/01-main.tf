@@ -136,7 +136,16 @@ resource "azurerm_linux_web_app" "backend" {
 
   # App settings - can be customized per app if needed
   app_settings = merge(var.tags, {
-    "WEBSITE_RUN_FROM_PACKAGE" = "1"
+    "AZURE_OPENAI_ENDPOINT"="@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.aoai_endpoint.id})",
+    "AZURE_OPENAI_API_KEY"="@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.aoai_api_key.id})",
+    "AZURE_OPENAI_API_VERSION"=azurerm_cognitive_deployment.gpt.model[0].version,
+    "AZURE_OPENAI_EMBEDDING_DEPLOYMENT"="text-embedding-ada-002",
+    "DB_PATH"="data/contoso.db",
+    "AAD_TENANT_ID"="",
+    "MCP_API_AUDIENCE"="",
+    "MCP_SERVER_URI"="https://${azurerm_linux_web_app.mcp.default_hostname}/mcp",
+    "DISABLE_AUTH"="true",
+    "WEBSITES_PORT"="7000"
   })
 
   tags = var.tags
@@ -221,6 +230,7 @@ resource "azurerm_linux_web_app" "mcp" {
     "MCP_API_AUDIENCE"="",
     "MCP_SERVER_URI"="http://localhost:7000/mcp",
     "DISABLE_AUTH"="true",
+    "WEBSITES_PORT"="8000"
   })
 
   tags = var.tags
