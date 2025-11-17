@@ -11,7 +11,7 @@ locals {
   ai_hub_name          = "aihub-${local.name_prefix}-${random_string.suffix.result}"
   ai_project_name      = "aiproject-${local.name_prefix}"
   storage_account_name = "st${replace(lower(local.name_prefix), "-", "")}${random_string.suffix.result}"
-  key_vault_name       = "kv-${local.name_prefix}-${random_string.suffix.result}"
+  key_vault_name       = "kv-${substr(local.name_prefix, 0, 14)}-${random_string.suffix.result}"
   web_app_name_prefix  = "${local.name_prefix}-${random_string.suffix.result}"
 
   # Common tags applied to all resources

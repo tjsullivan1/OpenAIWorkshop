@@ -38,8 +38,7 @@ ENV PATH="/app/.venv/bin:$PATH" \
 # Copy the venv and source code from build stage
 COPY --from=build /app /app
 
-
-EXPOSE 8000  
+EXPOSE 8000
 
 # Sanity: this should run backend.py exactly like:
 #   uv run applications/backend.py

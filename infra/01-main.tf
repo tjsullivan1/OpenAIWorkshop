@@ -1,9 +1,6 @@
 # Main Infrastructure Resources
 # Core Azure resources for the OpenAI Workshop
 
-# Data sources
-data "azurerm_client_config" "current" {}
-
 # Resource Group
 resource "azurerm_resource_group" "main" {
   name     = local.resource_group_name
@@ -57,7 +54,7 @@ resource "azurerm_key_vault" "main" {
   purge_protection_enabled   = false
 
   # Enable RBAC authorization (recommended over access policies)
-  enable_rbac_authorization = true
+  rbac_authorization_enabled = true
 
   # Network settings
   public_network_access_enabled = true
@@ -98,6 +95,19 @@ resource "azurerm_role_assignment" "kv_secrets_mcp" {
 
   depends_on = [azurerm_linux_web_app.mcp]
 }
+
+resource "azurerm_key_vault_secret" "aoai_endpoint" {
+name = "AZURE-OPENAI-ENDPOINT"
+value = azurerm_ai_services.ai_hub.endpoint
+key_vault_id = azurerm_key_vault.main.id
+}
+
+resource "azurerm_key_vault_secret" "aoai_api_key" {
+name = "AZURE-OPENAI-API-KEY"
+value = azurerm_ai_services.ai_hub.primary_access_key
+key_vault_id = azurerm_key_vault.main.id
+}
+
 
 resource "azurerm_service_plan" "main" {
   name                = "asp-${local.web_app_name_prefix}"
@@ -202,9 +212,9 @@ resource "azurerm_linux_web_app" "mcp" {
   # App settings - can be customized per app if needed
   app_settings = merge(var.tags, {
     "WEBSITE_RUN_FROM_PACKAGE" = "1",
-    "AZURE_OPENAI_ENDPOINT"="YOUR-OPENAI-SERVICE-ENDPOINT.openai.azure.com",
-    "AZURE_OPENAI_API_KEY"="YOUR-OPENAI-API-KEY",
-    "AZURE_OPENAI_API_VERSION"=2025-03-01-preview,
+    "AZURE_OPENAI_ENDPOINT"="@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.aoai_endpoint.id})",
+    "AZURE_OPENAI_API_KEY"="@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.aoai_api_key.id})",
+    "AZURE_OPENAI_API_VERSION"=azurerm_cognitive_deployment.gpt.model[0].version,
     "AZURE_OPENAI_EMBEDDING_DEPLOYMENT"="text-embedding-ada-002",
     "DB_PATH"="data/contoso.db",
     "AAD_TENANT_ID"="",
