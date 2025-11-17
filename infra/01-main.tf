@@ -143,6 +143,7 @@ resource "azurerm_linux_web_app" "backend" {
     "DB_PATH"="data/contoso.db",
     "AAD_TENANT_ID"="",
     "MCP_API_AUDIENCE"="",
+    "AGENT_MODULE"="agents.autogen.single_agent.loop_agent",
     "MCP_SERVER_URI"="https://${azurerm_linux_web_app.mcp.default_hostname}/mcp",
     "DISABLE_AUTH"="true",
     "WEBSITES_PORT"="7000"
