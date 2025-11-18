@@ -44,7 +44,9 @@ COPY --from=build /app /app
 
 EXPOSE 7000
 
+WORKDIR /app/applications
+
 # Sanity: this should run backend.py exactly like:
 #   uv run applications/backend.py
 # but using the venv python directly
-CMD ["python", "applications/backend.py"]
+CMD ["python", "backend.py"]
